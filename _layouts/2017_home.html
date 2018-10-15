@@ -1,34 +1,5 @@
 <!DOCTYPE html>
 <html>
-
-<script type="text/javascript">
-		<!--//--><![CDATA[//><!--
-    {% assign size = 0 %}
-    {% for post in site.data.twenty_17.carousel %}
-    {% assign size = size | plus: 1 %}
-    {% endfor %}
-    
-			var images = new Array()
-			function preload() {
-				for (i = 0; i < {{ size }}; i++) {
-					images[i] = new Image()
-					images[i].src = preload.arguments[i]
-				}
-			}
-			preload(
-        {% assign id = 0 %}
-          {% for post in site.data.twenty_17.carousel %}
-          {% assign id = id | plus: 1 %}
-          {% if id == {{ size }} %}
-            {{site.baseurl}}/css/2016_style/img/{{post.image}}
-          {% else %}
-            {{site.baseurl}}/css/2016_style/img/{{post.image}},
-          {% endif %}
-        
-          {% endfor %}
-			)
-		//--><!]]>
-</script>
   
 <!-- Bootstrap core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
