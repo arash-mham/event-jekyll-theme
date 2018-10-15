@@ -11,7 +11,7 @@
     <!-- Custom CSS & Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link rel="stylesheet" href="/css/2016_style/style.css">
 
-    <!--Google Analytics SCRIPT-->
+    <!--Google Analytics SCRIPT
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -21,8 +21,37 @@
         ga('create', 'UA-xxxxxxxx-x', 'auto');
         ga('send', 'pageview');
     </script>
-    <!--Google Analytics SCRIPT END-->
+    Google Analytics SCRIPT END-->
 
+    <script type="text/javascript">
+		<!--//--><![CDATA[//><!--
+    {% assign size = 0 %}
+    {% for post in site.data.twenty_17.carousel %}
+    {% assign size = size | plus: 1 %}
+    {% endfor %}
+    
+			var images = new Array()
+			function preload() {
+				for (i = 0; i < {{ size }}; i++) {
+					images[i] = new Image()
+					images[i].src = preload.arguments[i]
+				}
+			}
+			preload(
+        {% assign id = 0 %}
+          {% for post in site.data.twenty_17.carousel %}
+          {% assign id = id | plus: 1 %}
+          {% if id == {{ size }} %}
+            {{site.baseurl}}/css/2016_style/img/{{post.image}}
+          {% else %}
+            {{site.baseurl}}/css/2016_style/img/{{post.image}},
+          {% endif %}
+        
+          {% endfor %}
+			)
+		//--><!]]>
+</script>
+    
     <!--Remove image dragging -->
     <BODY ondragstart="return false;" ondrop="return false;">
 
