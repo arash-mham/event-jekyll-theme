@@ -17,21 +17,6 @@
                 }
 </style>
 
-<script>
-  var map = L.map('map').setView([49.284353,-123.11486], 15);
-  var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue" }).addTo(map);
-  
-  L.esri.basemapLayer('Streets').addTo(map);
-  L.esri.featureLayer({
-    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',
-    pointToLayer: function (geojson, latlng) {
-      return L.marker(latlng, {
-        icon: icons[geojson.properties.direction.toLowerCase()]
-      });
-    },
-  }).addTo(map);
-</script>
-
 <section id="accommodation">
         <div class="container12">
             <div class="row">
@@ -47,3 +32,19 @@
             </div>
         </div>
     </section>
+
+
+<script>
+  var map = L.map('map').setView([49.284353,-123.11486], 15);
+  var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue" }).addTo(map);
+  
+  L.esri.basemapLayer('Streets').addTo(map);
+  L.esri.featureLayer({
+    url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',
+    pointToLayer: function (geojson, latlng) {
+      return L.marker(latlng, {
+        icon: icons[geojson.properties.direction.toLowerCase()]
+      });
+    },
+  }).addTo(map);
+</script>
