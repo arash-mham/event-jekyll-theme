@@ -8,7 +8,7 @@
   
 - image: A.jpeg 
   title: Enjoy the city!
-  description: Vancouver is a beautiful and vibrant city with many touristic attractions.
+  description: Vancouver is a beautiful and vibrant city with many <a class="page-scroll" href="#aboutcity">touristic attractions</a>.
 
 - image: C.jpeg 
   title: Gathering the experts
