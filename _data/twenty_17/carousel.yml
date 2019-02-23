@@ -3,7 +3,7 @@
   description: June 17- 21, 2019
   
 - image: header-bg.jpg
-  title: Venue
+  title: <a class="page-scroll" href="#venue">Venue</a>
   description: IGS 2019 will take place at Simon Fraser University, Vancouver, Canada.
   
 - image: A.jpeg 
