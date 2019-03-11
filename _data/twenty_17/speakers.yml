@@ -10,6 +10,24 @@
   subtitle: University of Science and Technology of China, China
   img: Liu.jpg
 
+- title: Michael Bronstein
+  website: https://people.lu.usi.ch/bronstem/
+  conference: SIAM
+  subtitle: Università della Svizzera Italiana, Switzerland
+  img: Bronstein.jpg
+
+- title: Shahram Izadi
+  website: https://www.linkedin.com/in/shahram-izadi-923852117
+  conference: SIAM
+  subtitle: perceptiveIO, U.S.
+  img: Izadi.jpg
+
+- title: Yongjie Jessica Zhang
+  website: https://www.andrew.cmu.edu/user/jessicaz/
+  conference: SIAM
+  subtitle: Carnegie Mellon University, U.S.
+  img: JessicaZhang.jpg
+
 - title: Mark Gammon
   website: https://www.linkedin.com/in/mark-gammon-48005950/
   conference: GMP
