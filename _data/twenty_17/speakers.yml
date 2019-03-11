@@ -1,43 +1,29 @@
-- title: Konrad Polthier
-  website: http://page.mi.fu-berlin.de/polthier/
-  name: Konrad Polthier 
-  position: Conference Chair
-  subtitle: Free  University  of  Berlin
-  img: konradPolthier.jpg
-  thumbnail: konhadPolthier.jpg
-  alt: Picture of TBD
-  topic: Topic
-  description: More Info
+- title: Annalisa Buffa
+  website: https://people.epfl.ch/annalisa.buffa
+  conference: SPM
+  subtitle: L'Ecole polytechnique fédérale de Lausanne, Switzerland
+  img: Buffa.jpg
 
-- title: Wenping Wang
-  website: https://i.cs.hku.hk/~wenping/
-  name: Wenping Wang
-  position: Conference Chair
-  subtitle: University  of  Hong  Kong 
-  img: wenpingWang.jpg
-  thumbnail: wenpingWang.jpg
-  alt: Picture of TBD
-  topic: Topic
-  description: More Info
+- title: Ligang Liu
+  website: http://staff.ustc.edu.cn/~lgliu/
+  conference: SPM
+  subtitle: University of Science and Technology of China, China
+  img: Liu.jpg
 
-- title: Richard (Hao) Zhang
-  website: http://www.cs.sfu.ca/~haoz/
-  name: Richard (Hao) Zhang
-  position: Conference Chair
-  subtitle: Simon  Fraser  University 
-  img: richardZhang.jpg
-  thumbnail: richardZhang.jpg
-  alt: Picture of TBD
-  topic: Topic
-  description: More Info
+- title: Mark Gammon
+  website: https://www.linkedin.com/in/mark-gammon-48005950/
+  conference: GMP
+  subtitle: International TechneGroup Inc., UK
+  img: Gammon.jpg
+
+- title: Hui Huang
+  website: http://vcc.szu.edu.cn/~huihuang
+  conference: GMP
+  subtitle: Shenzhen Univesity, China
+  img: huang.jpg
   
-- title: Ali Mahdavi-Amiri
-  website: https://sites.google.com/site/alimahdaviamiri/
-  name: Ali Mahdavi-Amiri
-  position: Local Organizing Chair
-  subtitle: Simon Fraser University
-  img: amiriAli.jpg
-  thumbnail: aliAmiri.jpg
-  alt: Picture of TBD
-  topic: Topic
-  description: More Info
+- title: Emily Whiting
+  website: http://cs-people.bu.edu/whiting/
+  conference: GMP
+  subtitle: Boston University, USA
+  img: Whiting.jpg
