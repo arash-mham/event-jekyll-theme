@@ -37,17 +37,15 @@
                         </ul>
                     </li>
                     
-                    <li class="active">
-                        <a class="page-scroll" href="#">Speakers</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="{{ site.baseurl }}/#speakers">Organization</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="{{ site.baseurl }}/#sponsors">Sponsors</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="{{ site.baseurl }}/#contact">Contact</a>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">About</a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown2" style="background-color: rgb(70, 70, 70)">
+                            <li class=""><a class="page-scroll" href="{{ page.url | prepend: site.baseurl }}callforpapers">Submissions</a></li>
+                            <li class=""><a class="page-scroll" href="#">Speakers</a></li>
+                            <li class=""><a class="page-scroll" href="{{ site.baseurl }}/#speakers">Organization</a></li>
+                            <li class=""><a class="page-scroll" href="{{ site.baseurl }}/#sponsors">Sponsors</a></li>
+                            <li class=""><a class="page-scroll" href="{{ site.baseurl }}/#contact">Contact</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
