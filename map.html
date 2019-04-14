@@ -32,6 +32,37 @@
   var map = L.map('map').setView([49.284353,-123.11486], 15);
   var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue" }).addTo(map);
   
+  var markerDelta = L.marker([49.2841113,-123.1130124], { title: "Delta Hotel (100m)" }).addTo(map);
+  markerDelta.url = 'https://www.marriott.com/hotels/travel/yvrdv-delta-hotels-vancouver-downtown-suites/'
+  markerDelta.on('click', function(){
+  window.location = (this.url);
+  });
+  
+  var markerStRegis = L.marker([49.2831757,-123.1160393], { title: "St. Regis Hotel (450m)" }).addTo(map);
+  markerStRegis.url = 'https://www.stregishotel.com/'
+  markerStRegis.on('click', function(){
+  window.location = (this.url);
+  });
+  
+  var markerWestin = L.marker([49.2798629,-123.1173849], { title: "The Westin Grand Hotel (750m)" }).addTo(map);
+  markerWestin.url = 'https://www.marriott.com/hotels/travel/yvrgw-the-westin-grand-vancouver/'
+  markerWestin.on('click', function(){
+  window.location = (this.url);
+  });
+  
+  var markerRamanda = L.marker([49.2832761,-123.1125798], { title: "Ramanda Limited (190m)" }).addTo(map);
+  markerRamanda.url = 'https://www.ramadadowntownvancouver.com/'
+  markerRamanda.on('click', function(){
+  window.location = (this.url);
+  });
+  
+  var markerDaysInn = L.marker([49.2863426,-123.1170878], { title: "Days Inn (600m) Call the hotel directly (+1 604-681-4335) and request the \"Local Business Corporate call-in rate\" for a 15% discount" }).addTo(map);
+  markerRamanda.url = 'http://www.daysinnvancouver.com/'
+  markerRamanda.on('click', function(){
+  window.location = (this.url);
+  });
+  
+  
   L.esri.basemapLayer('Streets').addTo(map);
   L.esri.featureLayer({
     url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',
