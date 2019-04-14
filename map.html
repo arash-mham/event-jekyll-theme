@@ -40,31 +40,31 @@
   // Creating a custom icon
   var customIcon = L.icon(iconOptions);
   
-  var markerDelta = L.marker([49.2841113,-123.1130124], { title: "Delta Hotel (100m)", icon: customIcon }).addTo(map);
+  var markerDelta = L.marker([49.112740,-122.815930], { title: "Delta Hotel (100m)", icon: customIcon }).addTo(map);
   markerDelta.url = 'https://www.marriott.com/hotels/travel/yvrdv-delta-hotels-vancouver-downtown-suites/'
   markerDelta.on('click', function(){
   window.open(this.url, '_blank');
   });
   
-  var markerStRegis = L.marker([49.2831757,-123.1160393], { title: "St. Regis Hotel (450m)" }).addTo(map);
+  var markerStRegis = L.marker([49.282970,-123.115960], { title: "St. Regis Hotel (450m)", icon: customIcon }).addTo(map);
   markerStRegis.url = 'https://www.stregishotel.com/'
   markerStRegis.on('click', function(){
   window.open(this.url, '_blank');
   });
   
-  var markerWestin = L.marker([49.2798629,-123.1173849], { title: "The Westin Grand Hotel (750m)" }).addTo(map);
+  var markerWestin = L.marker([49.282630,-123.121790], { title: "The Westin Grand Hotel (750m)", icon: customIcon }).addTo(map);
   markerWestin.url = 'https://www.marriott.com/hotels/travel/yvrgw-the-westin-grand-vancouver/'
   markerWestin.on('click', function(){
   window.open(this.url, '_blank');
   });
   
-  var markerRamanda = L.marker([49.2832761,-123.1125798], { title: "Ramanda Limited (190m)" }).addTo(map);
+  var markerRamanda = L.marker([49.284650,-123.114850], { title: "Ramanda Limited (190m)", icon: customIcon }).addTo(map);
   markerRamanda.url = 'https://www.ramadadowntownvancouver.com/'
   markerRamanda.on('click', function(){
   window.open(this.url, '_blank');
   });
   
-  var markerDaysInn = L.marker([49.2863426,-123.1170878], { title: "Days Inn (600m) Call the hotel directly (+1 604-681-4335) and request the \"Local Business Corporate call-in rate\" for a 15% discount" }).addTo(map);
+  var markerDaysInn = L.marker([49.284650,-123.114850], { title: "Days Inn (600m) Call the hotel directly (+1 604-681-4335) and request the \"Local Business Corporate call-in rate\" for a 15% discount", icon: customIcon }).addTo(map);
   markerDaysInn.url = 'http://www.daysinnvancouver.com/'
   markerDaysInn.on('click', function(){
   window.open(this.url, '_blank');
