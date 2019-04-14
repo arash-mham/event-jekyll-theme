@@ -32,19 +32,10 @@
   var map = L.map('map').setView([49.284353,-123.11486], 15);
   var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue" }).addTo(map);
   
-  var hotelIcon = L.icon({
-    iconUrl: 'hotel.png',
-
-    iconSize:     [38, 38], // size of the icon
-    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-});
-  
-  var markerDelta = L.marker([49.2841113,-123.1130124], { title: "Delta Hotel (100m)", icon : hotelIcon }).addTo(map);
+  var markerDelta = L.marker([49.2841113,-123.1130124], { title: "Delta Hotel (100m)" }).addTo(map);
   markerDelta.url = 'https://www.marriott.com/hotels/travel/yvrdv-delta-hotels-vancouver-downtown-suites/'
   markerDelta.on('click', function(){
   window.open(this.url, '_blank');
-  //window.location = (this.url);
   });
   
   var markerStRegis = L.marker([49.2831757,-123.1160393], { title: "St. Regis Hotel (450m)" }).addTo(map);
