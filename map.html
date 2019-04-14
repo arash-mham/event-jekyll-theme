@@ -29,8 +29,14 @@
 <div id="map"></div>
 
 <script>
+  
+  var iconCenter = {
+    iconUrl: 'conference.png',
+    iconSize: [30, 30]
+  }
+  
   var map = L.map('map').setView([49.284353,-123.11486], 15);
-  var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue" }).addTo(map);
+  var marker = L.marker([49.284353,-123.11486], { title: "IGS Venue", icon: iconCenter }).addTo(map);
   
   // Icon options
   var iconOptions = {
