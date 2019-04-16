@@ -45,3 +45,15 @@
   conference: GMP
   subtitle: Boston University, USA
   img: Whiting.jpg
+
+- title: Holly Rushmeier
+  website: http://graphics.cs.yale.edu/site/people/holly-rushmeier
+  conference: SMI
+  subtitle: Yale University, USA
+  img: Holly.jpg
+  
+- title: Alec Jacobson
+  website: https://www.cs.toronto.edu/~jacobson/
+  conference: SMI
+  subtitle: University of Toronto, Canada
+  img: Jacobson.jpg
