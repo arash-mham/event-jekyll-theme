@@ -2718,8 +2718,6 @@ a {
 	}
 	.cd-schedule-modal__close::after,
 	.cd-schedule-modal__close::before {
-		background: hsl(0, 0%, 13%);
-		background: var(--cd-color-text);
 		height: 16px
 	}
 }
