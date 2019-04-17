@@ -13,53 +13,53 @@
 - title: Michael Bronstein
   website: https://www.imperial.ac.uk/people/m.bronstein
   conference: SIAM
-  subtitle: Imperial College London
+  subtitle: Imperial College London,<br>UK
   img: Bronstein.jpg
 
 - title: Shahram Izadi
   website: https://scholar.google.com/citations?user=hkCVqYkAAAAJ&hl=en
   conference: SIAM
-  subtitle: Google, USA
+  subtitle: Google,<br>USA
   img: Izadi.jpg
 
 - title: Jessica Zhang
   website: https://www.andrew.cmu.edu/user/jessicaz/
   conference: SIAM
-  subtitle: Carnegie Mellon University, USA
+  subtitle: Carnegie Mellon University,<br>USA
   img: JessicaZhang.jpg
 
 - title: Mark Gammon
   website: https://www.linkedin.com/in/mark-gammon-48005950/
   conference: GMP
-  subtitle: International TechneGroup Inc., UK
+  subtitle: International TechneGroup Inc.,<br>UK
   img: Gammon.jpg
 
 - title: Hui Huang
   website: http://vcc.szu.edu.cn/~huihuang
   conference: GMP
-  subtitle: Shenzhen Univesity, China
+  subtitle: Shenzhen Univesity,<br>China
   img: huang.jpg
   
 - title: Emily Whiting
   website: http://cs-people.bu.edu/whiting/
   conference: GMP
-  subtitle: Boston University, USA
+  subtitle: Boston University,<br>USA
   img: Whiting.jpg
 
 - title: Holly Rushmeier
   website: http://graphics.cs.yale.edu/site/people/holly-rushmeier
   conference: SMI
-  subtitle: Yale University, USA
+  subtitle: Yale University,<br>USA
   img: Holly.jpeg
   
 - title: Alec Jacobson
   website: https://www.cs.toronto.edu/~jacobson/
   conference: SMI
-  subtitle: University of Toronto, Canada
+  subtitle: University of Toronto,<br>Canada
   img: Jacobson.jpg
 
 - title: Scott Schaefer
   website: http://faculty.cs.tamu.edu/schaefer/
   conference: SMI
-  subtitle: Texas A&M University, USA
+  subtitle: Texas A&M University,<br>USA
   img: Schaefer.jpg
