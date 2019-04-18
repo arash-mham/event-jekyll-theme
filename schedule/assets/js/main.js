@@ -1,375 +1,567 @@
-(function() {
-	// Schedule Template - by CodyHouse.co
-	function ScheduleTemplate( element ) {
-		this.element = element;
-		this.timelineItems = this.element.getElementsByClassName('cd-schedule__timeline')[0].getElementsByTagName('li');
-		this.timelineStart = getScheduleTimestamp(this.timelineItems[0].textContent);
-		this.timelineUnitDuration = getScheduleTimestamp(this.timelineItems[1].textContent) - getScheduleTimestamp(this.timelineItems[0].textContent);
-		
-		this.topInfoElement = this.element.getElementsByClassName('cd-schedule__top-info')[0];
-		this.singleEvents = this.element.getElementsByClassName('cd-schedule__event');
-		
-		this.modal = this.element.getElementsByClassName('cd-schedule-modal')[0];
-		this.modalHeader = this.element.getElementsByClassName('cd-schedule-modal__header')[0];
-		this.modalHeaderBg = this.element.getElementsByClassName('cd-schedule-modal__header-bg')[0];
-		this.modalBody = this.element.getElementsByClassName('cd-schedule-modal__body')[0];
-		this.modalBodyBg = this.element.getElementsByClassName('cd-schedule-modal__body-bg')[0];
-		this.modalClose = this.modal.getElementsByClassName('cd-schedule-modal__close')[0];
-		this.modalDate = this.modal.getElementsByClassName('cd-schedule-modal__date')[0];
-		this.modalEventName = this.modal.getElementsByClassName('cd-schedule-modal__name')[0];
-		this.coverLayer = this.element.getElementsByClassName('cd-schedule__cover-layer')[0];
+@import '../../../../codyhouse-framework/main/assets/css/_global.scss'; // ⚠️ make sure to import the CodyHouse framework
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600'); // custom font
 
-		this.modalMaxWidth = 800;
-		this.modalMaxHeight = 480;
+// --------------------------------
 
-		this.animating = false;
-		this.supportAnimation = Util.cssSupports('transition');
+// Schedule Template - by CodyHouse.co
 
-		this.initSchedule();
-	};
+// --------------------------------
 
-	ScheduleTemplate.prototype.initSchedule = function() {
-		this.scheduleReset();
-		this.initEvents();
-	};
+:root {
+  // colors
+  @include defineColorHSL(--cd-color-event-1, 0, 100%, 32%);
+  @include defineColorHSL(--cd-color-event-2, 14, 100%, 32%);
+  @include defineColorHSL(--cd-color-event-3, 70, 88%, 23%);
+  @include defineColorHSL(--cd-color-event-4, 33, 100%, 25%);
+  @include defineColorHSL(--cd-color-event-5, 0, 0%, 50%);
+  @include defineColorHSL(--cd-color-text, 0, 0%, 13%);
+  @include defineColorHSL(--cd-color-border, 0, 0%, 92%);
 
-	ScheduleTemplate.prototype.scheduleReset = function() {
-		// according to the mq value, init the style of the template
-		var mq = this.mq(),
-			loaded = Util.hasClass(this.element, 'js-schedule-loaded'),
-			modalOpen = Util.hasClass(this.modal, 'cd-schedule-modal--open');
-		if( mq == 'desktop' && !loaded ) {
-			Util.addClass(this.element, 'js-schedule-loaded');
-			this.placeEvents();
-			modalOpen && this.checkEventModal(modalOpen);
-		} else if( mq == 'mobile' && loaded) {
-			//in this case you are on a mobile version (first load or resize from desktop)
-			Util.removeClass(this.element, 'cd-schedule--loading js-schedule-loaded');
-			this.resetEventsStyle();
-			modalOpen && this.checkEventModal();
-		} else if( mq == 'desktop' && modalOpen ) {
-			//on a mobile version with modal open - need to resize/move modal window
-			this.checkEventModal(modalOpen);
-			Util.removeClass(this.element, 'cd-schedule--loading');
-		} else {
-			Util.removeClass(this.element, 'cd-schedule--loading');
-		}
-	};
+  // font
+  --font-primary: 'Source Sans Pro', sans-serif;
 
-	ScheduleTemplate.prototype.resetEventsStyle = function() {
-		// remove js style applied to the single events
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			this.singleEvents[i].removeAttribute('style');
-		}
-	};
+  //schedule template
+  --schedule-rows-number: 19;
+  --schedule-rows-height: 50px;
+}
 
-	ScheduleTemplate.prototype.placeEvents = function() {
-		// on big devices - place events in the template according to their time/day
-		var self = this,
-			slotHeight = this.topInfoElement.offsetHeight;
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			var anchor = this.singleEvents[i].getElementsByTagName('a')[0];
-			var start = getScheduleTimestamp(anchor.getAttribute('data-start')),
-				duration = getScheduleTimestamp(anchor.getAttribute('data-end')) - start;
+body {
+	color: var(--cd-color-text);
+}
 
-			var eventTop = slotHeight*(start - self.timelineStart)/self.timelineUnitDuration,
-				eventHeight = slotHeight*duration/self.timelineUnitDuration;
+a {
+	color: var(--cd-color-event-3);
+}
 
-			this.singleEvents[i].setAttribute('style', 'top: '+(eventTop-1)+'px; height: '+(eventHeight +1)+'px');
-		}
+.cd-schedule {
+	position: relative;
 
-		Util.removeClass(this.element, 'cd-schedule--loading');
-	};
-
-	ScheduleTemplate.prototype.initEvents = function() {
-		var self = this;
-		for(var i = 0; i < this.singleEvents.length; i++) {
-			// open modal when user selects an event
-			this.singleEvents[i].addEventListener('click', function(event){
-				event.preventDefault();
-				if(!self.animating) self.openModal(this.getElementsByTagName('a')[0]);
-			});
-		}
-		//close modal window
-		this.modalClose.addEventListener('click', function(event){
-			event.preventDefault();
-			if( !self.animating ) self.closeModal();
-		});
-		this.coverLayer.addEventListener('click', function(event){
-			event.preventDefault();
-			if( !self.animating ) self.closeModal();
-		});
-	};
-
-	ScheduleTemplate.prototype.openModal = function(target) {
-		var self = this;
-		var mq = self.mq();
-		this.animating = true;
-
-		//update event name and time
-		this.modalEventName.textContent = target.getElementsByTagName('em')[0].textContent;
-		this.modalDate.textContent = target.getAttribute('data-start')+' - '+target.getAttribute('data-end');
-		this.modal.setAttribute('data-event', target.getAttribute('data-event'));
-
-		//update event content
-		this.loadEventContent(target.getAttribute('data-content'));
-
-		Util.addClass(this.modal, 'cd-schedule-modal--open');
-		
-		setTimeout(function(){
-			//fixes a flash when an event is selected - desktop version only
-			Util.addClass(target.closest('li'), 'cd-schedule__event--selected');
-		}, 10);
-
-		if( mq == 'mobile' ) {
-			self.modal.addEventListener('transitionend', function cb(){
-				self.animating = false;
-				self.modal.removeEventListener('transitionend', cb);
-			});
-		} else {
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
-
-			var windowWidth = window.innerWidth,
-				windowHeight = window.innerHeight;
-
-			var modalWidth = ( windowWidth*.8 > self.modalMaxWidth ) ? self.modalMaxWidth : windowWidth*.8,
-				modalHeight = ( windowHeight*.8 > self.modalMaxHeight ) ? self.modalMaxHeight : windowHeight*.8;
-
-			var modalTranslateX = parseInt((windowWidth - modalWidth)/2 - eventLeft),
-				modalTranslateY = parseInt((windowHeight - modalHeight)/2 - eventTop);
-			
-			var HeaderBgScaleY = modalHeight/eventHeight,
-				BodyBgScaleX = (modalWidth - eventWidth);
-
-			//change modal height/width and translate it
-			self.modal.setAttribute('style', 'top:'+eventTop+'px;left:'+eventLeft+'px;height:'+modalHeight+'px;width:'+modalWidth+'px;transform: translateY('+modalTranslateY+'px) translateX('+modalTranslateX+'px)');
-			//set modalHeader width
-			//self.modalHeader.setAttribute('style', 'width:'+eventWidth+'px');
-			//set modalBody left margin
-			self.modalBody.setAttribute('style', 'margin-left:'+eventWidth+'px');
-			//change modalBodyBg height/width ans scale it
-			self.modalBodyBg.setAttribute('style', 'height:'+eventHeight+'px; width: 1px; transform: scaleY('+HeaderBgScaleY+') scaleX('+BodyBgScaleX+')');
-			//change modal modalHeaderBg height/width and scale it
-			//self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px; width: '+eventWidth+'px; transform: scaleY('+HeaderBgScaleY+')');
-			self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px; transform: scaleY('+HeaderBgScaleY+')');
-
-			
-			self.modalHeaderBg.addEventListener('transitionend', function cb(){
-				//wait for the  end of the modalHeaderBg transformation and show the modal content
-				self.animating = false;
-				Util.addClass(self.modal, 'cd-schedule-modal--animation-completed');
-				self.modalHeaderBg.removeEventListener('transitionend', cb);
-			});
-		}
-
-		//if browser do not support transitions -> no need to wait for the end of it
-		this.animationFallback();
-	};
-
-	ScheduleTemplate.prototype.closeModal = function() {
-		var self = this;
-		var mq = self.mq();
-
-		var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
-			target = item.getElementsByTagName('a')[0];
-
-		this.animating = true;
-
-		if( mq == 'mobile' ) {
-			Util.removeClass(this.modal, 'cd-schedule-modal--open');
-			self.modal.addEventListener('transitionend', function cb(){
-				Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
-				Util.removeClass(item, 'cd-schedule__event--selected');
-				self.animating = false;
-				self.modal.removeEventListener('transitionend', cb);
-			});
-		} else {
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
-
-			var modalStyle = window.getComputedStyle(self.modal),
-				modalTop = Number(modalStyle.getPropertyValue('top').replace('px', '')),
-				modalLeft = Number(modalStyle.getPropertyValue('left').replace('px', ''));
-
-			var modalTranslateX = eventLeft - modalLeft,
-				modalTranslateY = eventTop - modalTop;
-
-			Util.removeClass(this.modal, 'cd-schedule-modal--open cd-schedule-modal--animation-completed');
-
-			//change modal width/height and translate it
-			self.modal.style.width = eventWidth+'px';self.modal.style.height = eventHeight+'px';self.modal.style.transform = 'translateX('+modalTranslateX+'px) translateY('+modalTranslateY+'px)';
-			//scale down modalBodyBg element
-			self.modalBodyBg.style.transform = 'scaleX(0) scaleY(1)';
-			//scale down modalHeaderBg element
-			// self.modalHeaderBg.setAttribute('style', 'transform: scaleY(1)');
-			self.modalHeaderBg.style.transform = 'scaleY(1)';
-
-			self.modalHeaderBg.addEventListener('transitionend', function cb(){
-				//wait for the  end of the modalHeaderBg transformation and reset modal style
-				Util.addClass(self.modal, 'cd-schedule-modal--no-transition');
-				setTimeout(function(){
-					self.modal.removeAttribute('style');
-					self.modalBody.removeAttribute('style');
-					self.modalHeader.removeAttribute('style');
-					self.modalHeaderBg.removeAttribute('style');
-					self.modalBodyBg.removeAttribute('style');
-				}, 10);
-				setTimeout(function(){
-					Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-				}, 20);
-				self.animating = false;
-				Util.removeClass(self.modal, 'cd-schedule-modal--content-loaded');
-				Util.removeClass(item, 'cd-schedule__event--selected');
-				self.modalHeaderBg.removeEventListener('transitionend', cb);
-			});
-		}
-
-		//if browser do not support transitions -> no need to wait for the end of it
-		this.animationFallback();
-	};
-
-	ScheduleTemplate.prototype.checkEventModal = function(modalOpen) {
-		// this function is used on resize to reset events/modal style
-		this.animating = true;
-		var self = this;
-		var mq = this.mq();
-		if( mq == 'mobile' ) {
-			//reset modal style on mobile
-			self.modal.removeAttribute('style');
-			self.modalBody.removeAttribute('style');
-			self.modalHeader.removeAttribute('style');
-			self.modalHeaderBg.removeAttribute('style');
-			self.modalBodyBg.removeAttribute('style');
-			Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-			self.animating = false;	
-		} else if( mq == 'desktop' && modalOpen) {
-			Util.addClass(self.modal, 'cd-schedule-modal--no-transition cd-schedule-modal--animation-completed');
-			var item = self.element.getElementsByClassName('cd-schedule__event--selected')[0],
-				target = item.getElementsByTagName('a')[0];
-
-			var eventPosition = target.getBoundingClientRect(),
-				eventTop = eventPosition.top,
-				eventLeft = eventPosition.left,
-				eventHeight = target.offsetHeight,
-				eventWidth = target.offsetWidth;
-
-			var windowWidth = window.innerWidth,
-				windowHeight = window.innerHeight;
-
-			var modalWidth = ( windowWidth*.8 > self.modalMaxWidth ) ? self.modalMaxWidth : windowWidth*.8,
-				modalHeight = ( windowHeight*.8 > self.modalMaxHeight ) ? self.modalMaxHeight : windowHeight*.8;
-
-			var HeaderBgScaleY = modalHeight/eventHeight,
-				BodyBgScaleX = (modalWidth - eventWidth);
-
-
-			setTimeout(function(){
-				self.modal.setAttribute('style', 'top:'+(windowHeight/2 - modalHeight/2)+'px;left:'+(windowWidth/2 - modalWidth/2)+'px;height:'+modalHeight+'px;width:'+modalWidth+'px;transform: translateY(0) translateX(0)');
-				//change modal modalBodyBg height/width
-				self.modalBodyBg.style.height = modalHeight+'px';self.modalBodyBg.style.transform = 'scaleY(1) scaleX('+BodyBgScaleX+')';self.modalBodyBg.style.width = '1px';
-				//set modalHeader width
-				self.modalHeader.setAttribute('style', 'width:'+eventWidth+'px');
-				//set modalBody left margin
-				self.modalBody.setAttribute('style', 'margin-left:'+eventWidth+'px');
-				//change modal modalHeaderBg height/width and scale it
-				//self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px;width:'+eventWidth+'px; transform:scaleY('+HeaderBgScaleY+');');
-				
-				self.modalHeaderBg.setAttribute('style', 'height: '+eventHeight+'px; transform:scaleY('+HeaderBgScaleY+');');
-			}, 10);
-
-			setTimeout(function(){
-				Util.removeClass(self.modal, 'cd-schedule-modal--no-transition');
-				self.animating = false;	
-			}, 20);
-
-		}
-	};
-
-	ScheduleTemplate.prototype.loadEventContent = function(content) {
-		// load the content of an event when user selects it
-		var self = this;
-
-		httpRequest = new XMLHttpRequest();
-		httpRequest.onreadystatechange = function() {
-			if (httpRequest.readyState === XMLHttpRequest.DONE) {
-	      if (httpRequest.status === 200) {
-	      	self.modal.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML = self.getEventContent(httpRequest.responseText); 
-	      	Util.addClass(self.modal, 'cd-schedule-modal--content-loaded');
-	      }
-	    }
-		};
-		httpRequest.open('GET', content+'.html');
-    httpRequest.send();
-	};
-
-	ScheduleTemplate.prototype.getEventContent = function(string) {
-		// reset the loaded event content so that it can be inserted in the modal
-		var div = document.createElement('div');
-		div.innerHTML = string.trim();
-		return div.getElementsByClassName('cd-schedule-modal__event-info')[0].innerHTML;
-	};
-
-	ScheduleTemplate.prototype.animationFallback = function() {
-		if( !this.supportAnimation ) { // fallback for browsers not supporting transitions
-			var event = new CustomEvent('transitionend');
-			self.modal.dispatchEvent(event);
-			self.modalHeaderBg.dispatchEvent(event);
-		}
-	};
-
-	ScheduleTemplate.prototype.mq = function(){
-		//get MQ value ('desktop' or 'mobile') 
-		var self = this;
-		return window.getComputedStyle(this.element, '::before').getPropertyValue('content').replace(/'|"/g, "");
-	};
-
-	function getScheduleTimestamp(time) {
-		//accepts hh:mm format - convert hh:mm to timestamp
-		time = time.replace(/ /g,'');
-		var timeArray = time.split(':');
-		var timeStamp = parseInt(timeArray[0])*60 + parseInt(timeArray[1]);
-		return timeStamp;
-	};
-
-	var scheduleTemplate = document.getElementsByClassName('js-cd-schedule'),	
-		scheduleTemplateArray = [],
-		resizing = false;
-	if( scheduleTemplate.length > 0 ) { // init ScheduleTemplate objects
-		for( var i = 0; i < scheduleTemplate.length; i++) {
-			(function(i){
-				scheduleTemplateArray.push(new ScheduleTemplate(scheduleTemplate[i]));
-			})(i);
-		}
-
-		window.addEventListener('resize', function(event) { 
-			// on resize - update events position and modal position (if open)
-			if( !resizing ) {
-				resizing = true;
-				(!window.requestAnimationFrame) ? setTimeout(checkResize, 250) : window.requestAnimationFrame(checkResize);
-			}
-		});
-
-		window.addEventListener('keyup', function(event){
-			// close event modal when pressing escape key
-			if( event.keyCode && event.keyCode == 27 || event.key && event.key.toLowerCase() == 'escape' ) {
-				for(var i = 0; i < scheduleTemplateArray.length; i++) {
-					scheduleTemplateArray[i].closeModal();
-				}
-			}
-		});
-
-		function checkResize(){
-			for(var i = 0; i < scheduleTemplateArray.length; i++) {
-				scheduleTemplateArray[i].scheduleReset();
-			}
-			resizing = false;
-		};
+	&::before { // never visible - this is used in js to check the current MQ
+		content: 'mobile';
+		display: none;
 	}
-}());
+  
+  .js & {
+  	@include breakpoint(md) {
+      width: calc(100% - 2*var(--component-padding));
+      margin-left: auto;
+      margin-right: auto;
+      max-width: var(--container-width-xl);
+
+  		&::before {
+  			content: 'desktop';
+  		}
+  	}
+  }
+}
+
+.cd-schedule__timeline { // events time
+	display: none;
+
+  .js & {
+  	@include breakpoint(md) {
+  		display: block;
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		height: 100%;
+  		width: 100%;
+  		padding-top: var(--schedule-rows-height);
+
+  		li {
+  			position: relative;
+  			height: var(--schedule-rows-height);
+
+  			&::after { // this is used to create the table horizontal lines
+  				content: '';
+  				position: absolute;
+  				bottom: 0;
+  				left: 0;
+  				width: 100%;
+  				height: 1px;
+  				background: var(--cd-color-border);
+  			}
+
+  			&:last-of-type::after {
+  				display: none;
+  			}
+
+  			span {
+  				display: none;
+  			}
+  		}
+  	}
+
+  	@include breakpoint(lg) {
+  		li {
+
+  			&::after {
+  				width: calc(100% - 60px);
+  				left: 60px;
+  			}
+
+  			span {
+  				display: inline-block;
+  				transform: translateY(-50%);
+          font-size: var(--text-sm);
+  			}
+
+  			&:nth-of-type(2n) span {
+  				display: none;
+  			}
+  		}
+  	}
+  }
+}
+
+.cd-schedule__events {
+	position: relative;
+	z-index: 1;
+  
+  .js & {
+  	@include breakpoint(md) {
+  		width: 100%;
+
+      > ul {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+  	}
+
+  	@include breakpoint(lg) {
+  		width: calc(100% - 60px); // 60px is the .cd-schedule__timeline > li::after element left
+  		margin-left: 60px;
+  	}
+  }
+}
+
+.cd-schedule__group { // group of same day events
+  margin-bottom: var(--space-lg);
+  
+  .js & {
+    @include breakpoint(md) {
+      flex-basis: 0;
+      flex-grow: 1;
+      border: 1px solid var(--cd-color-border);
+      margin-bottom: 0; // reset style
+
+      &:not(:first-of-type) {
+        border-left-width: 0;
+      }
+    }
+  }
+}
+
+.cd-schedule__group > ul {
+  position: relative;
+  padding: 0 var(--component-padding);
+  display: flex;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  &::after { // never visible - used to add a right padding to .cd-schedule__group > ul
+    display: inline-block;
+    content: '-';
+    width: 1px;
+    height: 100%;
+    opacity: 0;
+    color: transparent;
+  }
+  
+  .js & {
+    @include breakpoint(md) {
+      height: calc(var(--schedule-rows-height)*var(--schedule-rows-number));
+      overflow: visible;
+      padding: 0;
+
+      &::after { // reset style
+        display: none;
+      }
+    }
+  }
+}
+
+.cd-schedule__top-info { // day label
+  width: 100%;
+  padding: 0 var(--component-padding);
+
+  > span {
+    display: inline-block;
+    margin-bottom: var(--space-sm);
+    font-weight: bold;
+  }
+  
+  .js & {
+    @include breakpoint(md) {
+      // vertically center its content
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: var(--schedule-rows-height);
+      border-bottom: 1px solid var(--cd-color-border);
+      padding: 0; // reset style
+
+      > span {
+        font-weight: normal;
+        font-size: var(--text-sm);
+        margin-bottom: 0;
+      } 
+    }
+  }
+}
+
+.cd-schedule__event {
+  flex-shrink: 0; // force them to stay on one line
+  float: left; // flex fallback
+  height: 150px;
+  width: 70%;
+  max-width: 300px;
+  margin-right: var(--space-md);
+  transition: opacity .2s, background .2s;
+  
+  a {
+    display: block;
+    height: 100%;
+    padding: var(--space-sm);
+    box-shadow: inset 0 -3px 0 rgba(#000, .2);
+    text-decoration: none;
+  }
+
+  a::before { // event start/end date
+    content: attr(data-start)' - 'attr(data-end);
+  }
+  
+  .js & {
+    @include breakpoint(sm) {
+      width: 40%;
+    }
+
+    @include breakpoint(md) {
+      position: absolute;
+      z-index: 3;
+      width: calc(100% + 2px); // top position and height will be set using js
+      left: -1px;
+      max-width: none; // reset style
+      margin-right: 0;
+
+      a {
+        padding: var(--space-sm);
+        box-shadow: 0 10px 20px rgba(#000, .1), inset 0 -3px 0 rgba(#000, .2);
+      }
+    }
+  }
+}
+
+.js {
+  @include breakpoint(md) {
+    .cd-schedule__event--selected { // classes added when an user select the event
+      visibility: hidden;
+    }
+
+    .cd-schedule--loading .cd-schedule__event {
+    	// the class .cd-schedule--loading is added by default to the .cd-schedule element
+    	// it is removed as soon as the single events are placed in the schedule plan (using javascript)
+    	opacity: 0;
+    }
+  }
+}
+
+.cd-schedule__name, // event name in the schedule template
+.cd-schedule__event a::before, // event date in the schedule template
+.cd-schedule-modal__name, // event name in the modal element
+.cd-schedule-modal__date { // event date in the modal element
+	display: block;
+	color: var(--color-white);
+	font-weight: bold;
+	@include fontSmooth;
+}
+
+.cd-schedule__name,
+.cd-schedule-modal__name {
+	font-size: var(--text-lg);
+
+  @include breakpoint(md) {
+    font-size: calc(var(--text-sm)*1.2);
+  }
+}
+
+.cd-schedule-modal__date, // not included in the the HTML but added using JavScript
+.cd-schedule__event a::before { 
+	opacity: .7;
+	margin-bottom: var(--space-xxxs);
+
+  @include breakpoint(md) {
+    font-size: calc(var(--text-xs)*1.05);
+    margin-bottom: var(--space-xxxxs);
+  }
+}
+
+.cd-schedule__event [data-event="event-1"],
+.cd-schedule-modal[data-event="event-1"] .cd-schedule-modal__header-bg {
+	// this is used to set a background color for the event and the modal window
+	background: var(--cd-color-event-1);
+}
+
+.cd-schedule__event [data-event="event-2"],
+.cd-schedule-modal[data-event="event-2"] .cd-schedule-modal__header-bg {
+	background: var(--cd-color-event-2);
+}
+
+.cd-schedule__event [data-event="event-3"],
+.cd-schedule-modal[data-event="event-3"] .cd-schedule-modal__header-bg {
+	background: var(--cd-color-event-3);
+}
+
+.cd-schedule__event [data-event="event-4"],
+.cd-schedule-modal[data-event="event-4"] .cd-schedule-modal__header-bg {
+	background: var(--cd-color-event-4);
+}
+
+.cd-schedule__event [data-event="event-5"],
+.cd-schedule-modal[data-event="event-5"] .cd-schedule-modal__header-bg {
+	background: var(--cd-color-event-5);
+}
+
+.cd-schedule-modal {
+	position: fixed;
+	z-index: 3;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	visibility: hidden;
+	transform: translateZ(0); // Force Hardware acceleration
+
+	transform: translateX(100%);
+	transition: transform .4s, visibility .4s;
+	transition-timing-function: cubic-bezier(.5,0,.1,1);
+
+	@include breakpoint(md) {
+		// reset style
+		right: auto;
+		width: auto;
+		height: auto;
+		transform: translateX(0);
+		will-change: transform, width, height;
+		transition: height .4s, width .4s, transform .4s, visibility .4s;
+		transition-timing-function: cubic-bezier(.5,0,.1,1);
+	}
+}
+
+.cd-schedule-modal__header {
+  position: relative;
+  height: 70px;
+  display: flex;
+  align-content: center;
+  width: 100%;
+
+  @include breakpoint(md) {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+}
+
+.cd-schedule-modal__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--component-padding);
+
+  @include breakpoint(md) {
+    // reset style
+    display: block;
+    padding: var(--space-sm);
+  }
+}
+
+.cd-schedule-modal__body {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 70px); // 70px is the .cd-schedule-modal__header height
+
+  @include breakpoint(md) {
+    height: 100%;
+    width: auto;
+  }
+}
+
+.cd-schedule-modal__event-info {
+  position: relative;
+  z-index: 2;
+  line-height: var(--body-line-height);
+  height: 100%;
+  overflow: hidden;
+  font-size: calc(var(--text-sm) * 1.2);
+
+  > div {
+    overflow: auto;
+    height: 100%;
+    padding: var(--space-md) var(--component-padding);
+  }
+
+  @include breakpoint(md) {
+    opacity: 0;
+    font-size: var(--text-sm);
+
+    > div {
+      padding: calc(var(--space-md)*1.3) calc(var(--space-lg)*1.2) calc(var(--space-md)*1.3) calc(var(--space-md)*1.3);
+    }
+  }
+}
+
+.cd-schedule-modal__header-bg, 
+.cd-schedule-modal__body-bg { // these are the morphing backgrounds - visible on desktop only
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  
+  @include breakpoint(md) {
+    // Force Hardware acceleration
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+.cd-schedule-modal__header-bg {
+  z-index: 2;
+  transform-origin: top center;
+  
+  @include breakpoint(md) {
+    transition: transform .4s;
+    transition-timing-function: cubic-bezier(.5,0,.1,1);
+  }
+}
+
+.cd-schedule-modal__body-bg {
+  z-index: 1;
+  background: var(--color-white);
+  transform-origin: top left;
+
+  @include breakpoint(md) {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+.cd-schedule-modal--no-transition {
+  transition: none;
+
+  .cd-schedule-modal__header-bg, 
+  .cd-schedule-modal__body-bg {
+    transition: none !important;
+  }
+}
+
+.cd-schedule-modal__date {
+  display: none;
+
+  @include breakpoint(md) {
+    display: block;
+  }
+}
+
+.cd-schedule-modal__close { // close modal icon
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  height: 70px;
+  width: 70px;
+  background: alpha(var(--color-black), .1);
+
+  &::before, &::after { // these are the two lines of the 'X' icon
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 22px;
+    background: var(--color-white);
+    backface-visibility: hidden;
+  }
+
+  &::before {
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  }
+
+  &::after {
+    transform: translateX(-50%) translateY(-50%) rotate(-45deg);
+  }
+
+  @include breakpoint(md) {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    opacity: 0;
+
+    &::after, &::before {
+      background: var(--cd-color-text);
+      height: 16px;
+    }
+  }
+}
+
+.cd-schedule-modal--open { // this class is added as soon as an event is selected
+	transform: translateX(0);
+	visibility: visible;
+
+	.cd-schedule-modal__event-info > div { // smooth scroll on iOS touch deviceS
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
+@include breakpoint(md) {
+	.cd-schedule-modal--animation-completed  .cd-schedule-modal__close,
+	.cd-schedule-modal--content-loaded.cd-schedule-modal--animation-completed  .cd-schedule-modal__event-info {
+		// 	the .cd-schedule-modal--animation-completed class is added when the modal animation is completed
+		//	the .cd-schedule-modal--content-loaded class is added when the modal content has been loaded (using ajax)
+		opacity: 1;
+		transition: opacity .2s;
+	}
+
+	.cd-schedule-modal--open .cd-schedule-modal__body-bg {
+		opacity: 1;
+		transition: transform .4s;
+		transition-timing-function: cubic-bezier(.5,0,.1,1);
+	}
+}
+
+.cd-schedule__cover-layer { // layer between the content and the modal window
+	position: fixed;
+	z-index: 2;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: alpha(var(--color-black), 0.8);
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity .4s, visibility .4s;
+}
+
+.cd-schedule-modal--open + .cd-schedule__cover-layer {
+	opacity: 1;
+	visibility: visible;
+}
+
+//demo style
+.cd-main-header h1 {
+  color: var(--cd-color-text);
+  font-weight: 700;
+}
+
+.cd-article-link {
+  font-size: var(--text-sm);
+  transition: opacity .2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
