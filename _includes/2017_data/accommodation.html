@@ -1,30 +1,19 @@
 <style>
-                .map {
-                position:relative;
-                padding-bottom: 56.25%;
-                height:0;
-                overflow:hidden;
-                align: middle;
-                }
-                .map iframe, .video object, .video embed {
-                position: absolute;
-                margin: auto;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 100%;
-                height: 100%;
-                }
-	
-		@media (max-width: 992px) {
-    			.iframe {
-        			position:relative;
-				height:60vh;
-    			}
+                iframe{
+			position:relative;
+			height: 60vh;
+			width: 100%;
+		}
+                
 		@media (min-width: 992px) {
-    			.iframe {
+    			iframe {
         			position:absolute;
 				height:100%;
+				min-height:60vh;
+				width: 100%;
+				right: 0;
+				top: 0;
+				left:0;
     		}
 }
 </style>
@@ -101,7 +90,7 @@
 			
 		<div class="col-lg-6 col-md-12 center-block speakers-item">
                     <p style="text-align: center;">
-                    <iframe src="map.html" style="height: 100%; min-height:60vh; width: 100%; right: 0; top: 0; left:0"></iframe>
+                    <iframe src="map.html"></iframe>
                     </p>                    
                 </div>
 		
